@@ -20,12 +20,12 @@ private:
 	uint32_t m_length2_bits;
 	uint32_t m_length2_bytes;
 	uint8_t m_repeat;
-	uint32_t m_runtest;
+	uint32_t m_runtest = 100;
 	uint8_t m_endir_state;
 	uint8_t m_enddr_state;
 	uint8_t m_wait_start_state;
 	uint8_t m_wait_end_state;
-	uint32_t m_wait_time_usecs;
+	uint32_t m_wait_time_usecs = 100;
 	bool m_xcomplete;
 
 	static const uint32_t S_MAX_CHAIN_SIZE_BYTES = 129;
@@ -89,9 +89,14 @@ private:
 	SerialComm &serialComm() const { return m_serial_comm; }
 
 #ifdef ARDUINO_ARCH_AVR
+#define ACT_LED	5
+#define RDY_LED	6
+
 	// All bytes must pass through this function
 	uint8_t nextByte()
 	{
+		digitalWrite(RDY_LED, HIGH);
+		digitalWrite(ACT_LED, LOW);
 		int c = serialComm().nextByte();
 		if (c != -1) {
 			addStreamSum(c);
@@ -99,6 +104,8 @@ private:
 			serialComm().Quit(ERR_SERIAL_PORT_TIMEOUT,
 				F("Serial port timeout!"));
 		}
+		digitalWrite(RDY_LED, LOW);
+		digitalWrite(ACT_LED, HIGH);
 
 		return static_cast<uint8_t>(c);
 	}

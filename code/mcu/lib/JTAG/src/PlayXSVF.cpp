@@ -16,15 +16,15 @@ int PlayXSVF::play()
 		if (!p.handle_next_instruction()) {
 			ret = p.reached_xcomplete();
 			if (ret) {
-				s.Important(F("********"));
+				// s.Important(F("********"));
 				s.Important(F("Success!"));
-				s.Important(F("********"));
+				// s.Important(F("********"));
 			} else {
-				s.Important(F("*****************************"));
+				// s.Important(F("*****************************"));
 				s.Important(F("Failure at instruction #%5d"), n);
-				s.Important(F("*****************************"));
+				// s.Important(F("*****************************"));
 			}
-			p.print_last_tdo();
+			// p.print_last_tdo();
 			break;
 		}
 		yield();

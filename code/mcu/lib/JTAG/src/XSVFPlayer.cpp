@@ -44,6 +44,8 @@ XSVFPlayer::~XSVFPlayer()
 // All bytes must pass through this function
 uint8_t XSVFPlayer::nextByte()
 {
+	digitalWrite(RDY_LED, HIGH);
+	digitalWrite(ACT_LED, LOW);
 	int c = serialComm().nextByte();
 	if (c != -1) {
 		addStreamSum(c);
@@ -51,6 +53,8 @@ uint8_t XSVFPlayer::nextByte()
 		serialComm().Quit(ERR_SERIAL_PORT_TIMEOUT,
 			F("Serial port timeout!"));
 	}
+	digitalWrite(RDY_LED, LOW);
+	digitalWrite(ACT_LED, HIGH);
 
 	return static_cast<uint8_t>(c);
 }
@@ -59,7 +63,10 @@ uint8_t XSVFPlayer::nextByte()
 uint8_t XSVFPlayer::getNextByte()
 {
 	uint8_t i = nextByte();
-	serialComm().Debug(F(".    BYTE:%12u - 0x%02X"), i, i);
+
+	// This breaks debug output on the client side when dumping
+	// XCOMMENT, but maybe useful to uncomment if trace level is needed
+	//serialComm().Debug(F(".    BYTE:%12u - 0x%02X"), i, i);
 	
 	return i;
 }
